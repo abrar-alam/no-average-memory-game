@@ -1,3 +1,4 @@
+const colorGridDiv = document.querySelector("div#game");
 const gameContainer = document.getElementById("game");
 
 const COLORS = [
@@ -12,6 +13,16 @@ const COLORS = [
   "orange",
   "purple"
 ];
+
+
+// The data structure that keeps track of the two consecutive guesses
+
+const realTimeData = {
+  types : [null, null],
+  indices : [null, null],
+  guessCounter : 0,
+  timeoutID : null
+};
 
 // here is a helper function to shuffle an array
 // it returns the same array with values shuffled
@@ -42,6 +53,9 @@ let shuffledColors = shuffle(COLORS);
 // it creates a new div and gives it a class with the value of the color
 // it also adds an event listener for a click for each card
 function createDivsForColors(colorArray) {
+
+  let i = 0;
+
   for (let color of colorArray) {
     // create a new div
     const newDiv = document.createElement("div");
@@ -49,20 +63,100 @@ function createDivsForColors(colorArray) {
     // give it a class attribute for the value we are looping over
     newDiv.classList.add(color);
 
+    // give it a unique index (data attribute)
+    newDiv.setAttribute("data-idx", `${i}`);
+
     // call a function handleCardClick when a div is clicked on
     newDiv.addEventListener("click", handleCardClick);
 
     // append the div to the element with an id of game
     gameContainer.append(newDiv);
+
+    i++;
   }
 }
 
 // TODO: Implement this function!
 function handleCardClick(event) {
+    // let timeoutID = null;
+    if (realTimeData.guessCounter === 0){
+      realTimeData.timeoutID = setTimeout(function(){
+        // if still no further guesses, then put the card face-down again
+        if (realTimeData.guessCounter < 2){
+          event.target.style.backgroundColor = "white";
+          
+          realTimeData.guessCounter --;
+        }
+        
+         }, 1000);
+        
+        event.target.style.backgroundColor = event.target.getAttribute("class");
+        realTimeData.guessCounter++;
+        realTimeData.indices[0] = event.target.dataset.idx;
+        realTimeData.types[0] = event.target.getAttribute("class");
+
+    }
+
+    else if ((realTimeData.guessCounter === 1) && (event.target.dataset.idx !== realTimeData.indices[1])){
+      event.target.style.backgroundColor = event.target.getAttribute("class");
+      realTimeData.guessCounter++;
+      realTimeData.types[1] = event.target.getAttribute("class");
+
+      if (realTimeData.guessCounter === 2){
+        // check if two cards are match.
+        if(realTimeData.types[0] === realTimeData.types[1]){
+          console.log("Timeout ID ", realTimeData.timeoutID);
+          clearTimeout(realTimeData.timeoutID);
+          // detach the event listeners
+          event.target.removeEventListener("click", handleCardClick);
+          colorGridDiv.querySelector(`div[data-idx = '${realTimeData.indices[0]}']`).removeEventListener("click",handleCardClick);
+          // Resetting back the counter to 0 since we have a match
+          realTimeData.guessCounter = 0;
+        }
+        else {
+          clearTimeout(realTimeData.timeoutID);
+          setTimeout(function(){
+            event.target.style.backgroundColor = "white";
+            colorGridDiv.querySelector(`div[data-idx = '${realTimeData.indices[0]}']`).style.backgroundColor = "white";
+            realTimeData.guessCounter = 0;
+          }, 1500);
+        }
+      }
+
+    }
+
+
   // you can use event.target to see which element was clicked
-  event.target.style.backgroundColor = event.target.getAttribute("class");
-  console.log("you just clicked", event.target);
-}
+
+
+  // event.target.style.backgroundColor = event.target.getAttribute("class");
+  // console.log("you just clicked", event.target);
+
+  // setTimeout(function(){
+  //   if (realTimeData.guessCounter === 2)  
+  //   event.target.style.backgroundColor = "white";
+  // }, 500);
+
+  // if (realTimeData.guessCounter < 2){
+    
+  //   realTimeData.guessIndices[realTimeData.guessCounter] = event.target.dataset.idx ; 
+  //   realTimeData.guessCounter = (realTimeData.guessCounter === 2) ? 0 : realTimeData.guessCounter ++ ;
+
+  //   // check if counter ==2 and if two guesses matched. If so, then keep both cards displayed.
+  //     // if not matched, then keep both displayed for 1 second, and then put them face down
+  //   if ((realTimeData.guessCounter === 1) && ((realTimeData.guessIndices[0] !== realTimeData.guessIndices[1])
+  //       && (document.querySelector(`div['data-idx' = ${realTimeData.guessIndices[0]}]`).className === 
+  //       document.querySelector(`div['data-idx' = ${realTimeData.guessIndices[1]}]`).className))){
+  //         // resume from here
+
+
+  //   }
+
+    
+  }
+  
+  
+
 
 // when the DOM loads
 createDivsForColors(shuffledColors);
