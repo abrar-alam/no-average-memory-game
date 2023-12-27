@@ -97,9 +97,10 @@ function handleCardClick(event) {
 
     }
 
-    else if ((realTimeData.guessCounter === 1) && (event.target.dataset.idx !== realTimeData.indices[1])){
+    else if ((realTimeData.guessCounter === 1) && ((event.target.dataset.idx !== realTimeData.indices[0]))){
       event.target.style.backgroundColor = event.target.getAttribute("class");
       realTimeData.guessCounter++;
+      realTimeData.indices[1] = event.target.dataset.idx;
       realTimeData.types[1] = event.target.getAttribute("class");
 
       if (realTimeData.guessCounter === 2){
