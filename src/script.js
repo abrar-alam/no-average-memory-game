@@ -1,5 +1,7 @@
 const colorGridDiv = document.querySelector("div#game");
 const gameContainer = document.getElementById("game");
+const gameStartScreen = document.querySelector("div#game-start-screen");
+
 
 const COLORS = [
   "red",
@@ -15,7 +17,7 @@ const COLORS = [
 ];
 
 
-// The data structure that keeps track of the two consecutive guesses
+// The object that keeps track of the two consecutive guesses
 
 const realTimeData = {
   types : [null, null],
@@ -76,7 +78,18 @@ function createDivsForColors(colorArray) {
   }
 }
 
-// TODO: Implement this function!
+
+gameStartScreen.querySelector("button#start-game-button").addEventListener("click", handleStartGame);
+
+
+function handleStartGame(event){
+  gameContainer.style.display = "block";
+  gameStartScreen.style.display = "none";
+}
+
+
+
+
 function handleCardClick(event) {
     // let timeoutID = null;
     if (realTimeData.guessCounter === 0){
