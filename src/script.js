@@ -1,8 +1,10 @@
 const colorGridDiv = document.querySelector("div#game");
 const gameContainer = document.getElementById("game");
 const gameStartScreen = document.querySelector("div#game-start-screen");
+const liveScoreDiv = document.querySelector("div#live-score-div");
 let  totalNumberOfCards = null;
 let cardsRevealed = 0;
+let score = 0;
 const gameOverScreen = document.querySelector("div#game-over-screen");
 
 const COLORS = [
@@ -89,6 +91,8 @@ gameStartScreen.querySelector("button#start-game-button").addEventListener("clic
 function handleStartGame(event){
   gameContainer.style.display = "block";
   gameStartScreen.style.display = "none";
+  liveScoreDiv.style.display = "block";
+  liveScoreDiv.querySelector("h3#score-value").innerText = score;
 }
 
 
@@ -97,6 +101,7 @@ function handleStartGame(event){
 function handleCardClick(event) {
     // let timeoutID = null;
     // let cardsRevealed = 0;
+    liveScoreDiv.querySelector("h3#score-value").innerText = ++score;
 
     if (realTimeData.guessCounter === 0){
       realTimeData.timeoutID = setTimeout(function(){
@@ -178,7 +183,7 @@ function handleCardClick(event) {
     
   }
 
-  gameOverScreen.querySelector("button").addEventListener(
+  gameOverScreen.querySelector("button#restart-button").addEventListener(
     "click", 
     function(event){
       gameOverScreen.style.display = "none";
@@ -186,6 +191,7 @@ function handleCardClick(event) {
       for (let element of colorGridDiv.querySelectorAll("div")){
         element.remove();
       }
+      liveScoreDiv.querySelector("h3#score-value").innerText = (score = 0);
       createDivsForColors(shuffledColors);
     }
   );

@@ -25,6 +25,11 @@ div#game {
   text-align: center;
 } 
 
+div#live-score-div {
+  text-align: center;
+  display: none;
+}
+
 div#game-over-screen {
   text-align: center;
   display: none;
