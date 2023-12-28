@@ -22,4 +22,10 @@ div#game-start-screen {
 
 div#game {
   display: none;
+  text-align: center;
 } 
+
+div#game-over-screen {
+  text-align: center;
+  display: none;
+}

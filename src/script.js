@@ -1,7 +1,9 @@
 const colorGridDiv = document.querySelector("div#game");
 const gameContainer = document.getElementById("game");
 const gameStartScreen = document.querySelector("div#game-start-screen");
-
+let  totalNumberOfCards = null;
+let cardsRevealed = 0;
+const gameOverScreen = document.querySelector("div#game-over-screen");
 
 const COLORS = [
   "red",
@@ -76,6 +78,8 @@ function createDivsForColors(colorArray) {
 
     i++;
   }
+
+  totalNumberOfCards = colorGridDiv.childElementCount;
 }
 
 
@@ -92,6 +96,8 @@ function handleStartGame(event){
 
 function handleCardClick(event) {
     // let timeoutID = null;
+    // let cardsRevealed = 0;
+
     if (realTimeData.guessCounter === 0){
       realTimeData.timeoutID = setTimeout(function(){
         // if still no further guesses, then put the card face-down again
@@ -126,6 +132,9 @@ function handleCardClick(event) {
           colorGridDiv.querySelector(`div[data-idx = '${realTimeData.indices[0]}']`).removeEventListener("click",handleCardClick);
           // Resetting back the counter to 0 since we have a match
           realTimeData.guessCounter = 0;
+          cardsRevealed += 2;
+          gameOverScreen.style.display = (cardsRevealed === totalNumberOfCards) ? "block" : "none";
+
         }
         else {
           clearTimeout(realTimeData.timeoutID);
@@ -168,6 +177,18 @@ function handleCardClick(event) {
 
     
   }
+
+  gameOverScreen.querySelector("button").addEventListener(
+    "click", 
+    function(event){
+      gameOverScreen.style.display = "none";
+      cardsRevealed = 0;
+      for (let element of colorGridDiv.querySelectorAll("div")){
+        element.remove();
+      }
+      createDivsForColors(shuffledColors);
+    }
+  );
   
   
 
