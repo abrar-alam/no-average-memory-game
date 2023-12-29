@@ -111,8 +111,7 @@ function handleStartGame(event){
 
 
 function handleCardClick(event) {
-    //Keep updating the live score
-    liveScoreDiv.querySelector("h3#score-value").innerText = ++score;
+    
 
     if (realTimeData.guessCounter === 0){
       realTimeData.timeoutID = setTimeout(function(){
@@ -129,6 +128,8 @@ function handleCardClick(event) {
         realTimeData.guessCounter++;
         realTimeData.indices[0] = event.target.dataset.idx;
         realTimeData.types[0] = event.target.getAttribute("class");
+        //Keep updating the live score
+        liveScoreDiv.querySelector("h3#score-value").innerText = ++score;
 
     }
 
@@ -148,6 +149,9 @@ function handleCardClick(event) {
         realTimeData.guessCounter = 0;
         cardsRevealed += 2;
 
+        //Keep updating the live score
+        liveScoreDiv.querySelector("h3#score-value").innerText = ++score;
+
         // Check if the player has finished playing. If so update some display
         // properties, and save the score 
         if (cardsRevealed === totalNumberOfCards){
@@ -162,44 +166,15 @@ function handleCardClick(event) {
       }
       else {
         clearTimeout(realTimeData.timeoutID);
+        //Keep updating the live score
+        liveScoreDiv.querySelector("h3#score-value").innerText = ++score;
         setTimeout(function(){
           event.target.style.backgroundColor = "white";
           colorGridDiv.querySelector(`div[data-idx = '${realTimeData.indices[0]}']`).style.backgroundColor = "white";
           realTimeData.guessCounter = 0;
         }, 1500);
       }
-      
-
-    }
-
-
-  // you can use event.target to see which element was clicked
-
-
-  // event.target.style.backgroundColor = event.target.getAttribute("class");
-  // console.log("you just clicked", event.target);
-
-  // setTimeout(function(){
-  //   if (realTimeData.guessCounter === 2)  
-  //   event.target.style.backgroundColor = "white";
-  // }, 500);
-
-  // if (realTimeData.guessCounter < 2){
-    
-  //   realTimeData.guessIndices[realTimeData.guessCounter] = event.target.dataset.idx ; 
-  //   realTimeData.guessCounter = (realTimeData.guessCounter === 2) ? 0 : realTimeData.guessCounter ++ ;
-
-  //   // check if counter ==2 and if two guesses matched. If so, then keep both cards displayed.
-  //     // if not matched, then keep both displayed for 1 second, and then put them face down
-  //   if ((realTimeData.guessCounter === 1) && ((realTimeData.guessIndices[0] !== realTimeData.guessIndices[1])
-  //       && (document.querySelector(`div['data-idx' = ${realTimeData.guessIndices[0]}]`).className === 
-  //       document.querySelector(`div['data-idx' = ${realTimeData.guessIndices[1]}]`).className))){
-  //         // resume from here
-
-
-  //   }
-
-    
+    }    
   }
 
   gameOverScreen.querySelector("button#restart-button").addEventListener(
