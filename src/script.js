@@ -6,19 +6,8 @@ let  totalNumberOfCards = null;
 let cardsRevealed = 0;
 let score = 0;
 const gameOverScreen = document.querySelector("div#game-over-screen");
+let playingCards = [];
 
-const COLORS = [
-  "red",
-  "blue",
-  "green",
-  "orange",
-  "purple",
-  "red",
-  "blue",
-  "green",
-  "orange",
-  "purple"
-];
 
 
 // The object that keeps track of the two consecutive guesses
@@ -53,7 +42,6 @@ function shuffle(array) {
   return array;
 }
 
-let shuffledColors = shuffle(COLORS);
 
 // this function loops over the array of colors
 // it creates a new div and gives it a class with the value of the color
@@ -84,12 +72,11 @@ function createDivsForColors(colorArray) {
   
 }
 
-// This function takes care of loading the game screen for the first time with 
-// best score value so far. 
-// Params: cards: an array of shuffled cards
-function setupGame(cards){
-  createDivsForColors(cards);
-  totalNumberOfCards = colorGridDiv.childElementCount;
+// This function takes care of loading the game screen for the first time with the best score value so far. 
+function setupGame(){
+  
+  // createDivsForColors(cards);
+  // totalNumberOfCards = colorGridDiv.childElementCount;
   // Load the best score value from local storage
   if (localStorage.getItem("bestScore")){
     gameStartScreen.querySelector("h3#best-score-val").innerText = JSON.parse(localStorage.getItem("bestScore"));
@@ -100,11 +87,49 @@ gameStartScreen.querySelector("button#start-game-button").addEventListener("clic
 
 
 function handleStartGame(event){
+  // numberOfCards = gameStartScreen.querySelector("")
+  totalNumberOfCards = parseInt(gameStartScreen.querySelector("input#num-of-cards").value);
+  if ((totalNumberOfCards < 2) || ((totalNumberOfCards%2) !== 0)){
+    alert("Please enter a valid number");
+    return;
+  }
+
+  // generate cards
+  playingCards = generateCards(totalNumberOfCards);
+
+  // shuffle the cards
+  shuffle(playingCards);
+
+  // generate the html elements with the shuffled cards
+  createDivsForColors(playingCards);
+
   gameContainer.style.display = "block";
   gameStartScreen.style.display = "none";
   liveScoreDiv.style.display = "block";
   liveScoreDiv.querySelector("h3#score-value").innerText = score;
   gameOverScreen.style.display = "none" ;
+}
+
+// This function generates an array of random colored cards with size of numOfCards. 
+// numOfCards: a positive even number which is at least 2.
+// This DOES NOT shuffle the cards
+function generateCards(numOfCards){
+  let cards = [];
+  let r = 0;
+  let g = 0;
+  let b = 0;
+  for (let i = 0; i < numOfCards; i++){
+    if (i%2 === 0){
+      r = (Math.random()*256).toFixed(0);
+      g = 255;
+      b = (Math.random()*256).toFixed(0);
+      cards.push(`rgb(${r},${g},${b})`);
+    }
+    else {
+      cards.push(cards[i-1]);
+    }
+  }
+  return cards;
 }
 
 
@@ -186,7 +211,7 @@ function handleCardClick(event) {
         element.remove();
       }
       liveScoreDiv.querySelector("h3#score-value").innerText = (score = 0);
-      createDivsForColors(shuffledColors);
+      createDivsForColors(playingCards);
     }
   );
   
@@ -194,4 +219,4 @@ function handleCardClick(event) {
 
 
 // when the DOM loads
-setupGame(shuffledColors);
+setupGame();
